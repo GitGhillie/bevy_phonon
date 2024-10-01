@@ -39,7 +39,7 @@ impl Default for PhononSource {
             occlusion_radius: 1.0,
             occlusion_samples: 64,
             transmission: true,
-            directivity: false,
+            directivity: true,
         }
     }
 }
