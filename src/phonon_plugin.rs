@@ -26,6 +26,7 @@ pub struct PhononSource {
     pub occlusion_samples: usize,
     // todo document what transmission is and what is needed to make it work (materials)
     pub transmission: bool,
+    pub directivity: bool,
 }
 
 impl Default for PhononSource {
@@ -38,6 +39,7 @@ impl Default for PhononSource {
             occlusion_radius: 1.0,
             occlusion_samples: 64,
             transmission: true,
+            directivity: false,
         }
     }
 }
@@ -113,42 +115,64 @@ fn update_steam_audio(
     );
 
     for (source_transform, effect, settings) in audio_sources.iter() {
-        let mut flags = DirectApplyFlags::empty();
-
-        flags.set(
-            DirectApplyFlags::DistanceAttenuation,
-            settings.distance_attenuation,
-        );
-        flags.set(DirectApplyFlags::AirAbsorption, settings.air_absorption);
-        flags.set(DirectApplyFlags::Occlusion, settings.occlusion);
-        flags.set(DirectApplyFlags::Transmission, settings.transmission);
-
-        let source_position = CoordinateSpace3f::from_vectors(
-            source_transform.forward().into(),
-            source_transform.up().into(),
-            source_transform.translation().into(),
-        );
-
-        let mut direct_sound_path = DirectSoundPath::default();
-
-        sim_res.simulator.simulate(
-            &sim_res.scene,
-            flags,
-            &source_position,
-            &listener_position,
-            &DefaultDistanceAttenuationModel::default(),
-            &DefaultAirAbsorptionModel::default(),
-            Directivity::default(),
-            settings.occlusion_type,
-            settings.occlusion_radius,
-            settings.occlusion_samples,
-            1,
-            &mut direct_sound_path,
-        );
-
         // todo: Only search for the spatializer DSP if it hasn't been found before,
         // or if it's been moved
         if let Some(spatializer) = get_phonon_spatializer(effect.event_instance) {
+            // todo reduce indentation
+            let mut flags = DirectApplyFlags::empty();
+
+            // todo consider setting all these based on the FMOD parameters.
+            // This puts the artist in full control, including all the performance impacts.
+            // But the behavior will be much more expected (whatever is turned on also gets simulated).
+            flags.set(
+                DirectApplyFlags::DistanceAttenuation,
+                settings.distance_attenuation,
+            );
+            flags.set(DirectApplyFlags::AirAbsorption, settings.air_absorption);
+            flags.set(DirectApplyFlags::Occlusion, settings.occlusion);
+            flags.set(DirectApplyFlags::Transmission, settings.transmission);
+            flags.set(DirectApplyFlags::Directivity, settings.directivity);
+
+            let source_position = CoordinateSpace3f::from_vectors(
+                source_transform.forward().into(),
+                source_transform.up().into(),
+                source_transform.translation().into(),
+            );
+
+            let mut direct_sound_path = DirectSoundPath::default();
+
+            let directivity = match settings.directivity {
+                true => {
+                    let valuestrlen = 0; // todo what must this be?
+                    let (directivity_power, _) = spatializer
+                        .get_parameter_float(Params::DirectivityDipolePower as i32, valuestrlen)
+                        .unwrap();
+                    let (directivity_weight, _) = spatializer
+                        .get_parameter_float(Params::DirectivityDipoleWeight as i32, valuestrlen)
+                        .unwrap();
+                    Directivity {
+                        dipole_weight: directivity_weight,
+                        dipole_power: directivity_power,
+                    }
+                }
+                false => Directivity::default(),
+            };
+
+            sim_res.simulator.simulate(
+                &sim_res.scene,
+                flags,
+                &source_position,
+                &listener_position,
+                &DefaultDistanceAttenuationModel::default(),
+                &DefaultAirAbsorptionModel::default(),
+                directivity,
+                settings.occlusion_type,
+                settings.occlusion_radius,
+                settings.occlusion_samples,
+                1,
+                &mut direct_sound_path,
+            );
+
             let sound_path_ptr = &mut direct_sound_path as *mut _ as *mut c_void;
             let sound_path_size = size_of::<DirectSoundPath>();
 
