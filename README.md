@@ -17,8 +17,9 @@ pending the following [issue](https://github.com/NiklasEi/bevy_kira_audio/issues
     - Transmission (one material per mesh for now)
     - Directivity
 
+![FMOD Phonon Spatializer](/media/phonon-spatializer.png)
+
 Planned: HRTF, geometry-based reverb and more.
-todo add picture of Phonon spatializer
 
 ## Usage
 
@@ -28,6 +29,7 @@ using `cargo build -p phonon-fmod --release`.
 3. Place the FMOD plugin into one of the [FMOD plugin directories].
 4. When building from source pay extra attention to also copy phonon_fmod.plugin.js to the plugin directory.
 5. In FMOD Studio you can now add the Phonon Spatializer effect to your event tracks.
+   ![FMOD Plugin Selection](/media/plugin-selection.png)
 6. On the Bevy side update FmodPlugin to include the path to the FMOD plugin, and
 add the PhononPlugin:
 ```rust
