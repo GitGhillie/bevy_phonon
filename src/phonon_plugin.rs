@@ -111,7 +111,7 @@ fn update_steam_audio(
     let listener_position = CoordinateSpace3f::from_vectors(
         listener_transform.forward().into(),
         listener_transform.up().into(),
-        listener_transform.translation().into(),
+        listener_transform.translation(),
     );
 
     for (source_transform, effect, settings) in audio_sources.iter() {
@@ -136,7 +136,7 @@ fn update_steam_audio(
             let source_position = CoordinateSpace3f::from_vectors(
                 source_transform.forward().into(),
                 source_transform.up().into(),
-                source_transform.translation().into(),
+                source_transform.translation(),
             );
 
             let mut direct_sound_path = DirectSoundPath::default();

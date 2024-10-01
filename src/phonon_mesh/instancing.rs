@@ -59,7 +59,7 @@ fn create_instanced_mesh_internal(
         Some(instanced_mesh)
     } else {
         // Create audio geometry
-        if let Some(mesh) = meshes.get(&*mesh_handle) {
+        if let Some(mesh) = meshes.get(mesh_handle) {
             let audio_mesh: StaticMesh = mesh::try_from(mesh, material.clone()).unwrap();
 
             // Create sub scene with static mesh, this will later be used to create the instanced mesh
