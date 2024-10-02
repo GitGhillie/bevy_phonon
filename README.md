@@ -25,10 +25,10 @@ Planned: HRTF, geometry-based reverb and more.
 ## Usage
 
 1. First follow the setup of [bevy_fmod].
-2. Download the phonon_rs FMOD plugin from -todo- or build from source
+2. Download the phonon_rs FMOD plugin from https://github.com/GitGhillie/phonon_rs and build
 using `cargo build -p phonon-fmod --release`.
 3. Place the FMOD plugin into one of the [FMOD plugin directories].
-4. When building from source pay extra attention to also copy phonon_fmod.plugin.js to the plugin directory.
+4. Copy phonon_fmod.plugin.js to the plugin directory.
 5. In FMOD Studio you can now add the Phonon Spatializer effect to your event tracks.
    ![FMOD Plugin Selection](/media/plugin-selection.png)
 6. On the Bevy side update FmodPlugin to include the path to the FMOD plugin, and
