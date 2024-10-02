@@ -1,6 +1,7 @@
 # Bevy Phonon
 
-A bevy integration for the unofficial Steam Audio Rust port, [phonon_rs].
+A bevy integration for the unofficial Steam Audio Rust port, [phonon_rs].  
+Demo: https://youtu.be/DFIYmiytqAw
 
 As phonon_rs is game engine and audio engine independent,
 a choice must be made for the audio engine.
