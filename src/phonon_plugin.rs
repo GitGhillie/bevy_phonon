@@ -3,7 +3,7 @@ use crate::phonon_mesh::instancing::StaticMeshes;
 use bevy::prelude::*;
 use bevy_fmod::prelude::AudioListener;
 use bevy_fmod::prelude::AudioSource;
-use libfmod::{Dsp, EventInstance};
+use bevy_fmod::libfmod::{Dsp, EventInstance};
 use phonon::effects::direct::DirectApplyFlags;
 use phonon::models::air_absorption::DefaultAirAbsorptionModel;
 use phonon::models::directivity::Directivity;
@@ -143,7 +143,7 @@ fn update_steam_audio(
 
             let directivity = match settings.directivity {
                 true => {
-                    let valuestrlen = 0; // todo what must this be?
+                    let valuestrlen = 0;
                     let (directivity_power, _) = spatializer
                         .get_parameter_float(Params::DirectivityDipolePower as i32, valuestrlen)
                         .unwrap();
