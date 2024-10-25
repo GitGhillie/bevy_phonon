@@ -6,9 +6,9 @@ edition = "2021"
 [dependencies]
 # Audio related stuff (todo: should ideally be only one or two deps)
 # todo: crates.io only
-bevy_fmod = { git = "https://github.com/Salzian/bevy_fmod", branch = "update-libfmod", features = ["live-update"] }
-phonon = { version = "0.2", features = ["reflect"] }
-phonon-fmod = { git = "https://github.com/GitGhillie/phonon_rs", branch = "main" }
+bevy_fmod = { git = "https://github.com/Salzian/bevy_fmod", branch = "main", features = ["live-update"] }
+phonon = { git = "https://github.com/GitGhillie/phonon_rs", features = ["reflect"] }
+phonon-fmod = { git = "https://github.com/GitGhillie/phonon_rs" }
 
 [dependencies.bevy]
 version = "0.14"

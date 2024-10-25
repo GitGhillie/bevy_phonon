@@ -121,9 +121,6 @@ fn update_steam_audio(
             // todo reduce indentation
             let mut flags = DirectApplyFlags::empty();
 
-            // todo consider setting all these based on the FMOD parameters.
-            // This puts the artist in full control, including all the performance impacts.
-            // But the behavior will be much more expected (whatever is turned on also gets simulated).
             flags.set(
                 DirectApplyFlags::DistanceAttenuation,
                 settings.distance_attenuation,
