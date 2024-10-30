@@ -23,7 +23,6 @@ through Discord (user: ixml). If it's working well for you I'd also like to hear
     - Transmission (one material per mesh for now)
     - Directivity
 
-TODO: Update with latest addition (hrtf)
 ![FMOD Phonon Spatializer](/media/phonon-spatializer.png)
 
 Planned: Geometry-based reverb (CPU/GPU), baking and more.
