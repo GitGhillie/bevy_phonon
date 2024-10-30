@@ -1,9 +1,9 @@
 use crate::phonon_mesh;
 use crate::phonon_mesh::instancing::StaticMeshes;
 use bevy::prelude::*;
+use bevy_fmod::libfmod::{Dsp, EventInstance};
 use bevy_fmod::prelude::AudioListener;
 use bevy_fmod::prelude::AudioSource;
-use bevy_fmod::libfmod::{Dsp, EventInstance};
 use phonon::effects::direct::DirectApplyFlags;
 use phonon::models::air_absorption::DefaultAirAbsorptionModel;
 use phonon::models::directivity::Directivity;
@@ -27,6 +27,7 @@ pub struct PhononSource {
     // todo document what transmission is and what is needed to make it work (materials)
     pub transmission: bool,
     pub directivity: bool,
+    pub hrtf_enable: bool,
 }
 
 impl Default for PhononSource {
@@ -40,6 +41,7 @@ impl Default for PhononSource {
             occlusion_samples: 64,
             transmission: true,
             directivity: true,
+            hrtf_enable: true,
         }
     }
 }
@@ -88,12 +90,23 @@ impl Plugin for PhononPlugin {
                         phonon_mesh::update_audio_mesh_transforms,
                     ),
                     update_steam_audio,
+                    phonon_source_changed,
                 )
                     .chain(),
             );
 
         if self.auto_add_phonon_sources {
             app.add_systems(Update, register_phonon_sources);
+        }
+    }
+}
+
+fn phonon_source_changed(query: Query<(&AudioSource, &PhononSource), Changed<PhononSource>>) {
+    for (audio_source, component) in &query {
+        if let Some(spatializer) = get_phonon_spatializer(audio_source.event_instance) {
+            spatializer
+                .set_parameter_bool(Params::DirectBinaural as i32, component.hrtf_enable)
+                .unwrap()
         }
     }
 }
